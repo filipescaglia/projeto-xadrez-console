@@ -7,7 +7,9 @@ namespace projeto_xadrez
     {
         static void Main(string[] args)
         {
-            Board board = new Board(8, 8);            
+            Board board = new Board(8, 8);
+
+            View.PrintChess(board);
         }
     }
 }
