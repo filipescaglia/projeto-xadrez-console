@@ -8,20 +8,12 @@ namespace projeto_xadrez
     {
         static void Main(string[] args)
         {
-            try
-            {
-                Board board = new Board(8, 8);
+            ChessPosition pos = new ChessPosition('c', 7);
 
-                board.InsertPiece(new Tower(board, Color.Black), new Position(0, 0));
-                board.InsertPiece(new Tower(board, Color.Black), new Position(1, 3));
-                board.InsertPiece(new King(board, Color.Black), new Position(2, 4));
 
-                View.PrintChess(board);
-            }
-            catch (BoardException e)
-            {
-                Console.WriteLine(e.Message);
-            }
+            Console.WriteLine(pos);
+
+            Console.WriteLine(pos.toPosition());
         }
     }
 }
