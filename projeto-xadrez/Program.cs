@@ -10,15 +10,22 @@ namespace projeto_xadrez
         {
             try
             {
-                Board board = new Board(8, 8);
+                Match match = new Match();
 
-                board.InsertPiece(new Tower(board, Color.Black), new Position(0, 0));
-                board.InsertPiece(new Tower(board, Color.Black), new Position(1, 3));
-                board.InsertPiece(new King(board, Color.Black), new Position(2, 4));
+                while (!match.Finished)
+                {
+                    Console.Clear();
+                    View.PrintChess(match.Board);
+                    Console.WriteLine();
 
-                board.InsertPiece(new Tower(board, Color.White), new Position(3, 5));
+                    Console.Write("Origin: ");
+                    Position origin = View.ReadChessPosition().ToPosition();
+                    Console.Write("Destiny: ");
+                    Position destiny = View.ReadChessPosition().ToPosition();
 
-                View.PrintChess(board);
+                    match.PerformMovement(origin, destiny);
+                }                
+                
             }
             catch (BoardException e)
             {
