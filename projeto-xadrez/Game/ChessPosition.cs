@@ -18,7 +18,7 @@ namespace Game
             return "" + Column + Line;
         }
 
-        public Position toPosition()
+        public Position ToPosition()
         {
             return new Position(8 - Line, Column - 'a');
         }
