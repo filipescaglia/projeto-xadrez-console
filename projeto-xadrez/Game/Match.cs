@@ -6,8 +6,8 @@ namespace Game
     class Match
     {
         public Board Board { get; private set; }
-        private int Shift;
-        private Color CurrentPlayer;
+        public int Shift { get; private set; }
+        public Color CurrentPlayer { get; private set; }
         public bool Finished { get; private set; }
 
         public Match()
@@ -25,6 +25,49 @@ namespace Game
             p.IncreaseNumMovements();
             Piece CapturedPiece = Board.RemovePiece(destiny);
             Board.InsertPiece(p, destiny);
+        }
+
+        public void PerformPlay(Position origin, Position destiny)
+        {
+            PerformMovement(origin, destiny);
+            Shift++;
+            SwitchPlayer();
+        }
+
+        public void ValidateOriginPosition(Position pos)
+        {
+            if (Board.Piece(pos) == null)
+            {
+                throw new BoardException("The chosen position doesn't contain a piece!");
+            }
+            if (CurrentPlayer != Board.Piece(pos).Color)
+            {
+                throw new BoardException("The chosen piece isn't yours!");
+            }
+            if (!Board.Piece(pos).ExistPossibleMovements())
+            {
+                throw new BoardException("There is no possible movements for the chosen piece!");
+            }
+        }
+
+        public void ValidateDestinyPosition(Position origin, Position destiny)
+        {
+            if (!Board.Piece(origin).CanMoveTo(destiny))
+            {
+                throw new BoardException("Invalid destiny position!");
+            }
+        }
+
+        private void SwitchPlayer()
+        {
+            if (CurrentPlayer == Color.White)
+            {
+                CurrentPlayer = Color.Black;
+            }
+            else
+            {
+                CurrentPlayer = Color.White;
+            }
         }
 
         private void PlacePieces()
