@@ -17,10 +17,7 @@ namespace projeto_xadrez
                     try
                     {
                         Console.Clear();
-                        View.PrintChess(match.Board);
-                        Console.WriteLine();
-                        Console.WriteLine("Shift: " + match.Shift);
-                        Console.WriteLine("Waiting player: " + match.CurrentPlayer);
+                        View.PrintMatch(match);
                         Console.WriteLine();
 
                         Console.Write("Origin: ");

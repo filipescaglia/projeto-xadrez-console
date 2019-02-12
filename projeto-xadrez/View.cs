@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Chessboard;
 using Game;
 
@@ -6,6 +7,40 @@ namespace projeto_xadrez
 {
     class View
     {
+        public static void PrintMatch(Match match)
+        {
+            PrintChess(match.Board);
+            Console.WriteLine();
+            PrintCapturedPieces(match);
+            Console.WriteLine();
+            Console.WriteLine("Shift: " + match.Shift);
+            Console.WriteLine("Waiting player: " + match.CurrentPlayer);
+        }
+
+        public static void PrintCapturedPieces(Match match)
+        {
+            Console.WriteLine("Captured pieces:");
+            Console.Write("White: ");
+            PrintSet(match.CapturedPieces(Color.White));
+            Console.WriteLine();
+            Console.Write("Black: ");
+            ConsoleColor aux = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            PrintSet(match.CapturedPieces(Color.Black));
+            Console.ForegroundColor = aux;
+            Console.WriteLine();
+        }
+
+        public static void PrintSet(HashSet<Piece> set)
+        {
+            Console.Write("[");
+            foreach(Piece x in set)
+            {
+                Console.Write(x + " ");
+            }
+            Console.Write("]");
+        }
+
         public static void PrintChess(Board board)
         {
             for (int i = 0; i < board.Lines; i++)
