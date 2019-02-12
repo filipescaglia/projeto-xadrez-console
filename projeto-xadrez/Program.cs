@@ -20,6 +20,13 @@ namespace projeto_xadrez
 
                     Console.Write("Origin: ");
                     Position origin = View.ReadChessPosition().ToPosition();
+
+                    bool[,] PossiblePositions = match.Board.Piece(origin).PossibleMovements();
+
+                    Console.Clear();
+                    View.PrintChess(match.Board, PossiblePositions);
+
+                    Console.WriteLine();
                     Console.Write("Destiny: ");
                     Position destiny = View.ReadChessPosition().ToPosition();
 
