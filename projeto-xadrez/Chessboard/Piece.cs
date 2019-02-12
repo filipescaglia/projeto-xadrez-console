@@ -20,6 +20,11 @@
             QtMovements++;
         }
 
+        public void DecreaseNumMovements()
+        {
+            QtMovements--;
+        }
+
         public bool ExistPossibleMovements()
         {
             bool[,] mat = PossibleMovements();

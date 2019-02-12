@@ -12,6 +12,7 @@ namespace Game
         public bool Finished { get; private set; }
         private HashSet<Piece> Pieces;
         private HashSet<Piece> Captured;
+        public bool Check { get; private set; }
 
         public Match()
         {
@@ -19,26 +20,55 @@ namespace Game
             Shift = 1;
             CurrentPlayer = Color.White;
             Finished = false;
+            Check = false;
             Pieces = new HashSet<Piece>();
             Captured = new HashSet<Piece>();
             PlacePieces();
         }
 
-        public void PerformMovement(Position origin, Position destiny)
+        public Piece PerformMovement(Position origin, Position destiny)
         {
             Piece p = Board.RemovePiece(origin);
             p.IncreaseNumMovements();
-            Piece CapturedPiece = Board.RemovePiece(destiny);
+            Piece capturedPiece = Board.RemovePiece(destiny);
             Board.InsertPiece(p, destiny);
-            if (CapturedPiece != null)
+            if (capturedPiece != null)
             {
-                Captured.Add(CapturedPiece);
+                Captured.Add(capturedPiece);
             }
+            return capturedPiece;
+        }
+
+        public void UndoMovement(Position origin, Position destiny, Piece capturedPiece)
+        {
+            Piece p = Board.RemovePiece(destiny);
+            p.DecreaseNumMovements();
+            if (capturedPiece != null)
+            {
+                Board.InsertPiece(capturedPiece, destiny);
+                Captured.Remove(capturedPiece);
+            }
+            Board.InsertPiece(p, origin);
         }
 
         public void PerformPlay(Position origin, Position destiny)
         {
-            PerformMovement(origin, destiny);
+            Piece capturedPiece = PerformMovement(origin, destiny);
+
+            if (IsInCheck(CurrentPlayer))
+            {
+                UndoMovement(origin, destiny, capturedPiece);
+                throw new BoardException("You can't put yourself in check!");
+            }
+            if (IsInCheck(Opponent(CurrentPlayer)))
+            {
+                Check = true;
+            }
+            else
+            {
+                Check = false;
+            }
+
             Shift++;
             SwitchPlayer();
         }
@@ -84,7 +114,7 @@ namespace Game
             HashSet<Piece> aux = new HashSet<Piece>();
             foreach (Piece x in Captured)
             {
-                if (x.Color == color)
+                if (x.Color == color) 
                 {
                     aux.Add(x);
                 }
@@ -92,10 +122,10 @@ namespace Game
             return aux;
         }
 
-        public HashSet<Piece> PiecesInGame(Color color)
+        public HashSet<Piece> InGamePieces(Color color)
         {
             HashSet<Piece> aux = new HashSet<Piece>();
-            foreach (Piece x in Captured)
+            foreach (Piece x in Pieces)
             {
                 if (x.Color == color)
                 {
@@ -104,6 +134,49 @@ namespace Game
             }
             aux.ExceptWith(CapturedPieces(color));
             return aux;
+        }
+
+        private Color Opponent(Color color)
+        {
+            if (color == Color.White)
+            {
+                return Color.Black;
+            }
+            else
+            {
+                return Color.White;
+            }
+        }
+
+        private Piece King(Color color)
+        {
+            foreach (Piece x in InGamePieces(color))
+            {
+                if (x is King)
+                {
+                    return x;
+                }
+            }
+            return null;
+        }
+
+        public bool IsInCheck(Color color)
+        {
+            Piece k = King(color);
+            if (k == null)
+            {
+                throw new BoardException("There is no " + color + " king in the game!");
+            }
+
+            foreach (Piece x in InGamePieces(Opponent(color)))
+            {
+                bool[,] mat = x.PossibleMovements();
+                if (mat[k.Position.Line, k.Position.Column])
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public void PlaceNewPiece(char column, int line, Piece piece)
