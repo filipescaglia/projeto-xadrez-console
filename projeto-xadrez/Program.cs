@@ -41,8 +41,9 @@ namespace projeto_xadrez
                         Console.WriteLine(e.Message);
                         Console.ReadLine();
                     }
-                }                
-                
+                }
+                Console.Clear();
+                View.PrintMatch(match);
             }
             catch (BoardException e)
             {

@@ -14,12 +14,19 @@ namespace projeto_xadrez
             PrintCapturedPieces(match);
             Console.WriteLine();
             Console.WriteLine("Shift: " + match.Shift);
-            Console.WriteLine("Waiting player: " + match.CurrentPlayer);
-            if (match.Check)
+            if (!match.Finished)
             {
-                Console.WriteLine("CHECK!");
+                Console.WriteLine("Waiting player: " + match.CurrentPlayer);
+                if (match.Check)
+                {
+                    Console.WriteLine("CHECK!");
+                }
             }
-            
+            else
+            {
+                Console.WriteLine("CHECK-MATE");
+                Console.WriteLine("Winner: " + match.CurrentPlayer);
+            }
         }
 
         public static void PrintCapturedPieces(Match match)
